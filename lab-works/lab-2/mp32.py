@@ -5,7 +5,7 @@ if not os.path.exists('Video to images'):
     os.makedirs('Video to images')
 
 
-video_path = 'cola.mp4'
+video_path = 'BMW M4 CS X GTA IV THEME SONG _ CAR EDIT _ CAP CUT _ 4K.mp4'
 cam = cv2.VideoCapture(video_path)
 
 if not cam.isOpened():
