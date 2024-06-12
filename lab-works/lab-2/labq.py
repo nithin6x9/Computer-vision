@@ -10,4 +10,4 @@ while(True):
       break
 
 vidcap.release()
-cv2.destroyALlwindowsS
+cv2.destroyAllWindows()

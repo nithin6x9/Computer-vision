@@ -17,7 +17,7 @@ try:
         print("failed to load")
         exit_loop = True
 except KeyboardInterrupt:
-  pass
+  pass# Destroy all the windows
 
 vidcap.release()
 cv2.destroyAllWindows()
