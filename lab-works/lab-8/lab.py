@@ -1,51 +1,37 @@
 import cv2
-import numpy as np
 
-def get_dominant_color(frame):
-    average_color_per_row = np.average(frame, axis=0)
-    average_color = np.average(average_color_per_row, axis=0)
+def get_center_color(frame):
+    height, width, _ = frame.shape
+    center_x, center_y = width // 2, height // 2
+    b, g, r = frame[center_y, center_x]
+    return r, g, b
+
+def main():
+    cap = cv2.VideoCapture(0)
     
-    average_color = np.uint8(average_color)
+    if not cap.isOpened():
+        print("Error: Could not open video stream.")
+        return
 
-    dominant_color = "Red"
-    if average_color[1] > average_color[2] and average_color[1] > average_color[0]:
-        dominant_color = "Green"
-    elif average_color[0] > average_color[2]:
-        dominant_color = "Blue"
-    
-    return dominant_color, average_color
+    while True:
+        ret, frame = cap.read()
+        
+        if not ret:
+            print("Error: Could not read frame.")
+            break
+        
+        r, g, b = get_center_color(frame)
+        text = f'R: {r} G: {g} B: {b}'
+        cv2.putText(frame, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        center_x, center_y = frame.shape[1] // 2, frame.shape[0] // 2
+        cv2.circle(frame, (center_x, center_y), 5, (255, 255, 255), -1)
+        
+        cv2.imshow('RGB Color Detection', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-cap = cv2.VideoCapture(0)
+    cap.release()
+    cv2.destroyAllWindows()
 
-while True:
-
-    ret, frame = cap.read()
-    
-    if not ret:
-        break
-    
-   
-    dominant_color, avg_color = get_dominant_color(frame)
-    
- 
-    dominant_color_image = np.zeros((100, 300, 3), np.uint8)
-    if dominant_color == "Red":
-        dominant_color_image[:] = [0, 0, 255] 
-    elif dominant_color == "Green":
-        dominant_color_image[:] = [0, 255, 0]
-    elif dominant_color == "Blue":
-        dominant_color_image[:] = [255, 0, 0] 
-    
-   
-    cv2.imshow('Webcam', frame)
-    cv2.imshow('Dominant Color', dominant_color_image)
-
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    cv2.putText(frame, f'Dominant Color: {dominant_color}', (10, 30), font, 1, (255, 255, 255), 2, cv2.LINE_AA)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-cap.release()
-cv2.destroyAllWindows()
-
+if __name__ == "__main__":
+    main()
